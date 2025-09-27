@@ -1,0 +1,570 @@
+<!-- <!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">Post Title</title>
+</head>
+<body>
+
+   
+    <article>
+        <h1 th:text="${post.title}">Post Title Goes Here</h1>
+        <p><em>Posted on <span th:text="${#temporals.format(post.createdAt, 'MMMM dd, yyyy')}">January 01, 2023</span></em></p>
+        <div th:utext="${post.content}">
+            <p>This is where the full content of the blog post will appear.</p>
+        </div>
+    </article>
+
+    <hr/>
+
+   
+    <section>
+        <h2>Comments</h2>
+        
+        <div th:if="${!post.comments.isEmpty()}">
+             <div th:each="comment : ${post.comments}" style="margin-bottom: 20px; border-left: 2px solid #ccc; padding-left: 15px;">
+                <p th:text="${comment.content}">This is a comment.</p>
+                <small>
+                    Comment by: <strong th:text="${comment.user != null ? comment.user.username : 'Anonymous'}">Username</strong>
+                    on <span th:text="${#temporals.format(comment.createdAt, 'MMM dd, yyyy HH:mm')}">Date</span>
+                </small>
+            </div>
+        </div>
+        <div th:if="${post.comments.isEmpty()}">
+            <p>No comments yet. Be the first to share your thoughts!</p>
+        </div>
+    </section>
+
+    <hr/>
+
+    <section>
+        <h3>Leave a Comment</h3>
+
+        <div sec:authorize="isAuthenticated()">
+            
+            <form th:action="@{/posts/{postId}/comments(postId=${post.id})}" th:object="${newComment}" method="post">
+                <div>
+                    <label for="comment-content">Your Comment:</label>
+                </div>
+                <div>
+                    
+                    <textarea id="comment-content" th:field="*{content}" rows="5" cols="50" required></textarea>
+                    <div style="color: red; font-size: 0.9em; margin-top: 5px;"
+                     th:if="${#fields.hasErrors('content')}"
+                     th:errors="*{content}">
+                     Comment Error
+                </div>
+                </div>
+                <div>
+                    <button type="submit">Submit Comment</button>
+                </div>
+            </form>
+        </div>
+
+        
+        <div sec:authorize="isAnonymous()">
+            <p>
+                
+                <a th:href="@{/login}">Log in</a> to leave a comment.
+            </p>
+        </div>
+    </section>
+
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">Post Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: rgb(209, 233, 246);
+            --warm-yellow: rgb(246, 234, 203);
+            --soft-orange: rgb(241, 211, 206);
+            --gentle-pink: rgb(238, 202, 213);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--warm-yellow) 50%, var(--gentle-pink) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            animation: containerSlide 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes containerSlide {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .post-header {
+            background: linear-gradient(135deg, var(--gentle-pink), var(--soft-orange));
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 20%, transparent 70%);
+            animation: headerGlow 8s linear infinite;
+        }
+
+        @keyframes headerGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .post-title {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #333;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: titleFadeIn 1.2s ease;
+        }
+
+        @keyframes titleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-meta {
+            color: #666;
+            font-size: 1.1em;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+            animation: metaSlide 1.4s ease;
+        }
+
+        @keyframes metaSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .post-content {
+            padding: 50px;
+            font-size: 1.1em;
+            color: #444;
+            animation: contentFade 1.6s ease;
+        }
+
+        @keyframes contentFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .divider {
+            height: 3px;
+            background: linear-gradient(90deg, var(--gentle-pink), var(--soft-orange), var(--warm-yellow));
+            margin: 40px 50px;
+            border-radius: 2px;
+            animation: dividerGrow 1s ease 1.8s both;
+        }
+
+        @keyframes dividerGrow {
+            from { width: 0; }
+            to { width: calc(100% - 100px); }
+        }
+
+        .comments-section {
+            padding: 0 50px 50px;
+            animation: sectionSlide 1s ease 2s both;
+        }
+
+        @keyframes sectionSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '💬';
+            margin-left: 15px;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .comment {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(246, 234, 203, 0.3));
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 20px;
+            border-left: 5px solid var(--gentle-pink);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .comment:hover::before {
+            left: 100%;
+        }
+
+        .comment:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-left-color: var(--soft-orange);
+        }
+
+        .comment-content {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .comment-meta {
+            font-size: 0.95em;
+            color: #666;
+        }
+
+        .comment-meta strong {
+            color: #4a90e2;
+            font-weight: 600;
+        }
+
+        .no-comments {
+            text-align: center;
+            padding: 40px;
+            background: rgba(241, 211, 206, 0.3);
+            border-radius: 20px;
+            color: #666;
+            font-size: 1.2em;
+            border: 2px dashed var(--soft-orange);
+        }
+
+        .comment-form-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(209, 233, 246, 0.3), rgba(238, 202, 213, 0.3));
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .form-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-title::before {
+            content: '✍️';
+            margin-right: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 20px;
+            border: 3px solid var(--primary-blue);
+            border-radius: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            outline: none;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        textarea:focus {
+            border-color: var(--gentle-pink);
+            box-shadow: 0 0 0 4px rgba(238, 202, 213, 0.3);
+            background: white;
+            transform: scale(1.02);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 8px;
+            padding: 10px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--gentle-pink), var(--soft-orange));
+            color: #333;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(238, 202, 213, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .submit-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(238, 202, 213, 0.6);
+        }
+
+        .login-prompt {
+            text-align: center;
+            padding: 30px;
+            background: rgba(246, 234, 203, 0.5);
+            border-radius: 20px;
+            border: 2px dashed var(--warm-yellow);
+        }
+
+        .login-prompt a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .login-prompt a:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .post-header,
+            .post-content,
+            .comments-section {
+                padding: 30px 20px;
+            }
+            
+            .post-title {
+                font-size: 2.2em;
+            }
+            
+            .divider {
+                margin: 30px 20px;
+            }
+        }
+
+        .back-to-home {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--gentle-pink), var(--soft-orange));
+            color: #333;
+            padding: 15px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5em;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-home:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="post-header">
+            <h1 class="post-title" th:text="${post.title}">Post Title Goes Here</h1>
+            <p class="post-meta">📅 Posted on <span th:text="${#temporals.format(post.createdAt, 'MMMM dd, yyyy')}">January 01, 2023</span></p>
+        </div>
+
+        <div class="post-content">
+            <div th:utext="${post.content}">
+                <p>This is where the full content of the blog post will appear.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="comments-section">
+            <h2 class="section-title">Comments</h2>
+            
+            <div th:if="${!post.comments.isEmpty()}">
+                <div th:each="comment, iterStat : ${post.comments}" class="comment" th:style="'animation-delay: ' + ${iterStat.index * 0.1} + 's'">
+                    <p class="comment-content" th:text="${comment.content}">This is a comment.</p>
+                    <small class="comment-meta">
+                        💬 Comment by: <strong th:text="${comment.user != null ? comment.user.username : 'Anonymous'}">Username</strong>
+                        on <span th:text="${#temporals.format(comment.createdAt, 'MMM dd, yyyy HH:mm')}">Date</span>
+                    </small>
+                </div>
+            </div>
+            
+            <div th:if="${post.comments.isEmpty()}" class="no-comments">
+                <p>💭 No comments yet. Be the first to share your thoughts about this amazing book content!</p>
+            </div>
+
+            <div class="comment-form-section">
+                <h3 class="form-title">Leave a Comment</h3>
+
+                <div sec:authorize="isAuthenticated()">
+                    <form th:action="@{/posts/{postId}/comments(postId=${post.id})}" th:object="${newComment}" method="post">
+                        <div class="form-group">
+                            <label for="comment-content">Your Comment:</label>
+                            <textarea id="comment-content" th:field="*{content}" placeholder="Share your thoughts about this post..." required></textarea>
+                            <div class="error-message" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                                Comment Error
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="submit-btn">Submit Comment ✨</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div sec:authorize="isAnonymous()" class="login-prompt">
+                    <p>🔐 Join our book-loving community!</p>
+                    <a th:href="@{/login}">Login to leave a comment</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="/" class="back-to-home" title="Back to Home">🏠</a>
+</body>
+</html>

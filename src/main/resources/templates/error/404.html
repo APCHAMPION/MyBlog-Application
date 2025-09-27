@@ -1,0 +1,519 @@
+<!-- <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - Not Found</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 5rem;
+            font-weight: 300;
+            margin: 0;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #6c757d;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        .error-details {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            color: #495057;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <h2>Oops! Page Not Found.</h2>
+        <p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+        
+        
+            This block displays the specific error message passed from our GlobalExceptionHandler.
+            It's a good practice to show this for detailed feedback, especially during development.
+            You could choose to hide this in a production environment if desired.
+       
+        <div class="error-details" th:if="${errorMessage}" th:text="${errorMessage}">
+            Specific error details will go here.
+        </div>
+        
+        <p><a th:href="@{/}">Return to Homepage</a></p>
+    </div>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - Page Not Found | Book Lovers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: rgb(209, 233, 246);
+            --warm-yellow: rgb(246, 234, 203);
+            --soft-orange: rgb(241, 211, 206);
+            --gentle-pink: rgb(238, 202, 213);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--gentle-pink) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--warm-yellow) 20%, transparent 70%);
+            animation: backgroundFloat 12s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-30px, 30px) rotate(240deg); }
+        }
+
+        .error-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 60px 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 100%;
+            animation: containerBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        @keyframes containerBounce {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .error-number {
+            font-size: 8rem;
+            font-weight: 300;
+            margin: 0;
+            background: linear-gradient(45deg, #e74c3c, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: numberPulse 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(231, 76, 60, 0.3));
+            }
+            50% { 
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 30px rgba(243, 156, 18, 0.5));
+            }
+        }
+
+        .error-icon {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(5deg); }
+            66% { transform: translateY(5px) rotate(-5deg); }
+        }
+
+        .error-title {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            margin-bottom: 25px;
+            color: #333;
+            animation: titleSlide 1s ease 0.5s both;
+        }
+
+        @keyframes titleSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            animation: messageSlide 1s ease 0.7s both;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .error-details {
+            background: rgba(246, 234, 203, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed var(--warm-yellow);
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 40px;
+            font-family: 'Courier New', monospace;
+            animation: detailsFade 1s ease 0.9s both;
+        }
+
+        @keyframes detailsFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .home-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gentle-pink), var(--soft-orange));
+            color: #333;
+            text-decoration: none;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(238, 202, 213, 0.4);
+            position: relative;
+            overflow: hidden;
+            animation: buttonSlide 1s ease 1.1s both;
+        }
+
+        @keyframes buttonSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .home-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .home-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .home-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(238, 202, 213, 0.6);
+        }
+
+        .floating-books {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .floating-book {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0.1;
+            color: var(--gentle-pink);
+            animation: floatBooks 8s ease-in-out infinite;
+        }
+
+        .floating-book:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-book:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
+        .floating-book:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+        .floating-book:nth-child(4) { bottom: 10%; right: 25%; animation-delay: 6s; }
+
+        @keyframes floatBooks {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                opacity: 0.1; 
+            }
+            50% { 
+                transform: translateY(-30px) rotate(180deg); 
+                opacity: 0.3; 
+            }
+        }
+
+        .search-suggestion {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(209, 233, 246, 0.3);
+            border-radius: 15px;
+            border: 2px dashed var(--primary-blue);
+            animation: suggestionFade 1s ease 1.3s both;
+        }
+
+        @keyframes suggestionFade {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .suggestion-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-links a {
+            background: rgba(255, 255, 255, 0.8);
+            color: #4a90e2;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .suggestion-links a:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .error-container {
+                padding: 40px 30px;
+                margin: 15px;
+            }
+            
+            .error-number {
+                font-size: 6rem;
+            }
+            
+            .error-icon {
+                font-size: 4rem;
+            }
+            
+            .error-title {
+                font-size: 2rem;
+            }
+            
+            .error-message {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-books">
+        <div class="floating-book">📚</div>
+        <div class="floating-book">📖</div>
+        <div class="floating-book">📝</div>
+        <div class="floating-book">📓</div>
+    </div>
+
+    <div class="error-container">
+        <div class="error-icon">📖</div>
+        <h1 class="error-number">404</h1>
+        <h2 class="error-title">Oops! Page Not Found</h2>
+        <p class="error-message">
+            The page you're looking for seems to have wandered off like a bookmark in a good book. 
+            Don't worry, even the best readers sometimes lose their place!
+        </p>
+        
+        <div class="error-details" th:if="${errorMessage}" th:text="${errorMessage}">
+            Specific error details will appear here when available.
+        </div>
+        
+        <a th:href="@{/}" class="home-button">
+            🏠 Return to Book Haven
+        </a>
+
+        <div class="search-suggestion">
+            <p><strong>📚 Looking for something specific?</strong></p>
+            <div class="suggestion-links">
+                <a href="/">📖 Latest Posts</a>
+                <a href="/login">🔐 Login</a>
+                <a href="/register">✨ Join Us</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- Generic Error Page Template -->
+<!--
+For generic-error.html, replace:
+- Title: "500 - Server Error | Book Lovers"
+- .error-number content: "500" (or make it dynamic)
+- .error-icon content: "⚠️"
+- .error-title content: "Something Went Wrong"
+- .error-message content: "Our book servers are having a momentary hiccup. Even the best libraries need maintenance sometimes!"
+- Add error-specific styling by changing --primary-blue to a red variant for errors
+-->
+
+<style>
+/* Additional styles for generic error page */
+.server-error .error-number {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.server-error .error-container {
+    border-left: 5px solid #e74c3c;
+}
+
+.server-error .home-button {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
